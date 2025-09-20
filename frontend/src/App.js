@@ -152,12 +152,17 @@ const App = () => {
           <div
             key={result.id}
             className={`search-result-item ${selectedFile?.path === result.file_path ? 'selected' : ''}`}
-            onClick={() => handleFileSelect({
-              id: result.id,
-              name: result.file_name,
-              path: result.file_path,
-              type: 'file'
-            })}
+            onClick={() => {
+              // Create proper file object for search results
+              const fileObj = {
+                id: result.id,
+                name: result.file_name,
+                path: result.file_path,
+                type: 'file'
+              };
+              console.log('Selecting file from search:', fileObj);
+              handleFileSelect(fileObj);
+            }}
           >
             <div className="result-filename">📄 {result.file_name}</div>
             <div className="result-path">{result.file_path}</div>
