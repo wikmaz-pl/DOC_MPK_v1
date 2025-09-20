@@ -101,3 +101,124 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Build a Google-like website that searches through PDF files on disk (/var/www/html/pdf), shows expandable folder structure on right side, PDF preview on left when clicked, and live search functionality for both filenames and content inside PDFs"
+
+backend:
+  - task: "File system traversal API"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Implemented /api/files/tree endpoint to traverse /var/www/html/pdf directory structure"
+
+  - task: "PDF content extraction and indexing"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented /api/files/index endpoint using PyPDF2 to extract text from PDFs and store in MongoDB"
+
+  - task: "PDF file serving for preview"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented /api/files/serve endpoint to serve PDF files for iframe preview"
+
+  - task: "Search functionality (filename and content)"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented /api/search endpoint with filename and content search capabilities"
+
+frontend:
+  - task: "Folder tree navigation component"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Successfully implemented expandable folder tree on right sidebar - tested and working"
+
+  - task: "PDF preview component"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/App.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "main"
+        comment: "PDF preview iframe shows blank - may be CORS or PDF serving issue"
+
+  - task: "Live search functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implemented debounced search with results display - needs testing"
+
+  - task: "Responsive UI design"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Beautiful Google-like design with gradient header, responsive layout"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "PDF file serving for preview"
+    - "PDF content extraction and indexing"
+    - "Search functionality (filename and content)"
+    - "PDF preview component"
+  stuck_tasks:
+    - "PDF preview component"
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Implemented complete PDF search system with folder navigation, PDF preview, and search. Folder tree navigation confirmed working. PDF preview showing blank iframe - needs investigation. Search and indexing functionality needs testing. Ready for backend testing first, then frontend testing."
