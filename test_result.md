@@ -222,9 +222,6 @@ metadata:
 
 test_plan:
   current_focus:
-    - "PDF file serving for preview"
-    - "PDF content extraction and indexing"
-    - "Search functionality (filename and content)"
     - "PDF preview component"
   stuck_tasks:
     - "PDF preview component"
