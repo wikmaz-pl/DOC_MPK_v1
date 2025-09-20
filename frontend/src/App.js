@@ -92,8 +92,12 @@ const App = () => {
 
   // Handle file selection
   const handleFileSelect = (file) => {
+    console.log('File selected:', file);
     if (file.type === 'file' && file.name.toLowerCase().endsWith('.pdf')) {
+      console.log('Setting selected file:', file);
       setSelectedFile(file);
+    } else {
+      console.log('File is not a PDF or is not a file type');
     }
   };
 
