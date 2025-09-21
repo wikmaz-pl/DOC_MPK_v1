@@ -227,7 +227,7 @@ const App = () => {
             onClick={indexPDFs}
             disabled={isIndexing}
           >
-            {isIndexing ? '⏳ Indexing...' : '🔄 Index PDFs'}
+            {isIndexing ? '⏳ Indexing...' : '🔄 Index Documents'}
           </button>
         </div>
       </header>
