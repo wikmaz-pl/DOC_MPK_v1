@@ -147,7 +147,7 @@ const App = () => {
             <span className="file-icon">
               {item.type === 'folder' ? 
                 (expandedFolders.has(item.path) ? '📂' : '📁') : 
-                '📄'
+                getFileIcon(item.name)
               }
             </span>
             <span className="file-name">{item.name}</span>
