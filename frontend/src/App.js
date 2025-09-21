@@ -189,7 +189,7 @@ const App = () => {
               handleFileSelect(fileObj);
             }}
           >
-            <div className="result-filename">📄 {result.file_name}</div>
+            <div className="result-filename">{getFileIcon(result.file_name)} {result.file_name}</div>
             <div className="result-path">{result.file_path}</div>
             {result.content_match && (
               <div className="result-snippet">
