@@ -223,11 +223,13 @@ const App = () => {
               </div>
               <div className="pdf-viewer">
                 <iframe
-                  src={`${API}/files/serve/${encodeURIComponent(selectedFile.path)}`}
+                  src={`${API}/files/serve/${encodeURIComponent(selectedFile.path)}#toolbar=1&navpanes=1&scrollbar=1`}
                   title={selectedFile.name}
                   width="100%"
                   height="100%"
                   frameBorder="0"
+                  onLoad={() => console.log('PDF iframe loaded')}
+                  onError={() => console.log('PDF iframe error')}
                 />
               </div>
             </div>
