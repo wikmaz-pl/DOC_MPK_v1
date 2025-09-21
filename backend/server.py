@@ -262,38 +262,39 @@ async def serve_document(file_path: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.post("/files/index")
-async def index_pdfs():
-    """Index all PDF files for content search"""
+async def index_documents():
+    """Index all supported document files for content search"""
     try:
         indexed_count = 0
         
         # Clear existing index
         await db.indexed_files.delete_many({})
         
-        # Walk through all PDF files
-        for pdf_path in DOCUMENT_BASE_PATH.rglob("*.pdf"):
-            try:
-                # Extract text content
-                content = await extract_pdf_text(pdf_path)
-                
-                if content:
-                    # Store in database
-                    indexed_file = IndexedFile(
-                        file_path=str(pdf_path.relative_to(DOCUMENT_BASE_PATH)),
-                        file_name=pdf_path.name,
-                        content=content
-                    )
+        # Walk through all supported document files
+        for extension in SUPPORTED_EXTENSIONS:
+            for doc_path in DOCUMENT_BASE_PATH.rglob(f"*{extension}"):
+                try:
+                    # Extract text content
+                    content = await extract_document_text(doc_path)
                     
-                    await db.indexed_files.insert_one(indexed_file.dict())
-                    indexed_count += 1
+                    if content:
+                        # Store in database
+                        indexed_file = IndexedFile(
+                            file_path=str(doc_path.relative_to(DOCUMENT_BASE_PATH)),
+                            file_name=doc_path.name,
+                            content=content
+                        )
+                        
+                        await db.indexed_files.insert_one(indexed_file.dict())
+                        indexed_count += 1
+                        
+                        logger.info(f"Indexed: {doc_path.name}")
+                        
+                except Exception as e:
+                    logger.error(f"Error indexing {doc_path}: {e}")
+                    continue
                     
-                    logger.info(f"Indexed: {pdf_path.name}")
-                    
-            except Exception as e:
-                logger.error(f"Error indexing {pdf_path}: {e}")
-                continue
-                
-        return {"message": f"Indexed {indexed_count} PDF files"}
+        return {"message": f"Indexed {indexed_count} document files"}
         
     except Exception as e:
         logger.error(f"Error during indexing: {e}")
