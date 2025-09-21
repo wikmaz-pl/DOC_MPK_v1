@@ -310,14 +310,15 @@ async def search_files(q: str, limit: int = 50):
         search_term = q.strip().lower()
         results = []
         
-        # Search by filename
-        for pdf_path in DOCUMENT_BASE_PATH.rglob("*.pdf"):
-            if search_term in pdf_path.name.lower():
-                results.append(SearchResult(
-                    file_path=str(pdf_path.relative_to(DOCUMENT_BASE_PATH)),
-                    file_name=pdf_path.name,
-                    match_type="filename"
-                ))
+        # Search by filename in all supported document types
+        for extension in SUPPORTED_EXTENSIONS:
+            for doc_path in DOCUMENT_BASE_PATH.rglob(f"*{extension}"):
+                if search_term in doc_path.name.lower():
+                    results.append(SearchResult(
+                        file_path=str(doc_path.relative_to(DOCUMENT_BASE_PATH)),
+                        file_name=doc_path.name,
+                        match_type="filename"
+                    ))
         
         # Search by content in indexed files
         content_matches = await db.indexed_files.find({
