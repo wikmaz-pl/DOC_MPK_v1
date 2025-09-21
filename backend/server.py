@@ -13,6 +13,11 @@ from datetime import datetime
 import PyPDF2
 import asyncio
 import aiofiles
+import openpyxl
+import xlrd
+from docx import Document
+import docx2txt
+from striprtf.striprtf import rtf_to_text
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
