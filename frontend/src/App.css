@@ -146,6 +146,28 @@ body {
   display: block;
 }
 
+.pdf-fallback {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-size: 0.8rem;
+}
+
+.pdf-link {
+  color: #61dafb;
+  text-decoration: none;
+  margin-left: 0.5rem;
+  font-weight: 500;
+}
+
+.pdf-link:hover {
+  text-decoration: underline;
+}
+
 .no-selection {
   height: 100%;
   display: flex;
