@@ -226,20 +226,34 @@ async def get_file_tree(path: str = ""):
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.get("/files/serve/{file_path:path}")
-async def serve_pdf(file_path: str):
-    """Serve PDF file for preview"""
+async def serve_document(file_path: str):
+    """Serve document file for preview/download"""
     try:
         full_path = DOCUMENT_BASE_PATH / file_path
         
         if not full_path.exists() or not full_path.is_file():
             raise HTTPException(status_code=404, detail="File not found")
             
-        if not full_path.suffix.lower() == '.pdf':
-            raise HTTPException(status_code=400, detail="Only PDF files are supported")
-            
+        extension = full_path.suffix.lower()
+        if extension not in SUPPORTED_EXTENSIONS:
+            raise HTTPException(status_code=400, detail=f"File type {extension} not supported")
+        
+        # Set appropriate media type based on file extension
+        media_types = {
+            '.pdf': 'application/pdf',
+            '.xlsx': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            '.xls': 'application/vnd.ms-excel',
+            '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            '.doc': 'application/msword',
+            '.rtf': 'application/rtf',
+            '.txt': 'text/plain'
+        }
+        
+        media_type = media_types.get(extension, 'application/octet-stream')
+        
         return FileResponse(
             path=str(full_path),
-            media_type='application/pdf',
+            media_type=media_type,
             filename=full_path.name
         )
         
