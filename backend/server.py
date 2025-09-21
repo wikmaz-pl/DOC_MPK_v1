@@ -34,7 +34,10 @@ app = FastAPI()
 api_router = APIRouter(prefix="/api")
 
 # PDF base path
-PDF_BASE_PATH = Path("/var/www/html/pdf")
+DOCUMENT_BASE_PATH = Path("/var/www/html/pdf")
+
+# Supported file extensions
+SUPPORTED_EXTENSIONS = {'.pdf', '.xlsx', '.xls', '.docx', '.doc', '.rtf', '.txt'}
 
 # Models
 class FileItem(BaseModel):
@@ -105,7 +108,7 @@ async def root():
 async def get_file_tree(path: str = ""):
     """Get folder structure and files"""
     try:
-        current_path = PDF_BASE_PATH / path if path else PDF_BASE_PATH
+        current_path = DOCUMENT_BASE_PATH / path if path else DOCUMENT_BASE_PATH
         
         if not current_path.exists():
             raise HTTPException(status_code=404, detail="Path not found")
@@ -121,9 +124,9 @@ async def get_file_tree(path: str = ""):
                 file_info = get_file_info(item_path)
                 if file_info:
                     # For relative path calculation
-                    relative_path = str(item_path.relative_to(PDF_BASE_PATH))
+                    relative_path = str(item_path.relative_to(DOCUMENT_BASE_PATH))
                     file_info["path"] = relative_path
-                    file_info["parent_path"] = str(item_path.parent.relative_to(PDF_BASE_PATH)) if item_path.parent != PDF_BASE_PATH else ""
+                    file_info["parent_path"] = str(item_path.parent.relative_to(DOCUMENT_BASE_PATH)) if item_path.parent != DOCUMENT_BASE_PATH else ""
                     
                     items.append(FileItem(**file_info))
                     
@@ -140,7 +143,7 @@ async def get_file_tree(path: str = ""):
 async def serve_pdf(file_path: str):
     """Serve PDF file for preview"""
     try:
-        full_path = PDF_BASE_PATH / file_path
+        full_path = DOCUMENT_BASE_PATH / file_path
         
         if not full_path.exists() or not full_path.is_file():
             raise HTTPException(status_code=404, detail="File not found")
@@ -168,7 +171,7 @@ async def index_pdfs():
         await db.indexed_files.delete_many({})
         
         # Walk through all PDF files
-        for pdf_path in PDF_BASE_PATH.rglob("*.pdf"):
+        for pdf_path in DOCUMENT_BASE_PATH.rglob("*.pdf"):
             try:
                 # Extract text content
                 content = await extract_pdf_text(pdf_path)
@@ -176,7 +179,7 @@ async def index_pdfs():
                 if content:
                     # Store in database
                     indexed_file = IndexedFile(
-                        file_path=str(pdf_path.relative_to(PDF_BASE_PATH)),
+                        file_path=str(pdf_path.relative_to(DOCUMENT_BASE_PATH)),
                         file_name=pdf_path.name,
                         content=content
                     )
@@ -207,10 +210,10 @@ async def search_files(q: str, limit: int = 50):
         results = []
         
         # Search by filename
-        for pdf_path in PDF_BASE_PATH.rglob("*.pdf"):
+        for pdf_path in DOCUMENT_BASE_PATH.rglob("*.pdf"):
             if search_term in pdf_path.name.lower():
                 results.append(SearchResult(
-                    file_path=str(pdf_path.relative_to(PDF_BASE_PATH)),
+                    file_path=str(pdf_path.relative_to(DOCUMENT_BASE_PATH)),
                     file_name=pdf_path.name,
                     match_type="filename"
                 ))
