@@ -96,7 +96,93 @@ async def extract_pdf_text(file_path: Path) -> str:
             
         return text.strip()
     except Exception as e:
-        logger.error(f"Error extracting text from {file_path}: {e}")
+        logger.error(f"Error extracting text from PDF {file_path}: {e}")
+        return ""
+
+async def extract_excel_text(file_path: Path) -> str:
+    """Extract text content from Excel files"""
+    try:
+        text = ""
+        if file_path.suffix.lower() == '.xlsx':
+            wb = openpyxl.load_workbook(file_path, data_only=True)
+            for sheet_name in wb.sheetnames:
+                sheet = wb[sheet_name]
+                text += f"Sheet: {sheet_name}\n"
+                for row in sheet.iter_rows(values_only=True):
+                    row_text = " | ".join([str(cell) if cell is not None else "" for cell in row])
+                    if row_text.strip():
+                        text += row_text + "\n"
+                text += "\n"
+        elif file_path.suffix.lower() == '.xls':
+            workbook = xlrd.open_workbook(file_path)
+            for sheet_idx in range(workbook.nsheets):
+                sheet = workbook.sheet_by_index(sheet_idx)
+                text += f"Sheet: {sheet.name}\n"
+                for row_idx in range(sheet.nrows):
+                    row_text = " | ".join([str(sheet.cell_value(row_idx, col_idx)) for col_idx in range(sheet.ncols)])
+                    if row_text.strip():
+                        text += row_text + "\n"
+                text += "\n"
+        return text.strip()
+    except Exception as e:
+        logger.error(f"Error extracting text from Excel {file_path}: {e}")
+        return ""
+
+async def extract_word_text(file_path: Path) -> str:
+    """Extract text content from Word documents"""
+    try:
+        if file_path.suffix.lower() == '.docx':
+            doc = Document(file_path)
+            text = ""
+            for paragraph in doc.paragraphs:
+                text += paragraph.text + "\n"
+            return text.strip()
+        elif file_path.suffix.lower() == '.doc':
+            # Use docx2txt for .doc files
+            text = docx2txt.process(str(file_path))
+            return text.strip() if text else ""
+        return ""
+    except Exception as e:
+        logger.error(f"Error extracting text from Word document {file_path}: {e}")
+        return ""
+
+async def extract_rtf_text(file_path: Path) -> str:
+    """Extract text content from RTF files"""
+    try:
+        with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
+            rtf_content = file.read()
+        text = rtf_to_text(rtf_content)
+        return text.strip()
+    except Exception as e:
+        logger.error(f"Error extracting text from RTF {file_path}: {e}")
+        return ""
+
+async def extract_text_file(file_path: Path) -> str:
+    """Extract text content from plain text files"""
+    try:
+        async with aiofiles.open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
+            content = await file.read()
+        return content.strip()
+    except Exception as e:
+        logger.error(f"Error reading text file {file_path}: {e}")
+        return ""
+
+async def extract_document_text(file_path: Path) -> str:
+    """Extract text from any supported document format"""
+    extension = file_path.suffix.lower()
+    
+    if extension == '.pdf':
+        return await extract_pdf_text(file_path)
+    elif extension in ['.xlsx', '.xls']:
+        return await extract_excel_text(file_path)
+    elif extension in ['.docx', '.doc']:
+        return await extract_word_text(file_path)
+    elif extension == '.rtf':
+        return await extract_rtf_text(file_path)
+    elif extension == '.txt':
+        return await extract_text_file(file_path)
+    else:
+        logger.warning(f"Unsupported file format: {extension}")
         return ""
 
 # API Routes
