@@ -231,6 +231,18 @@ const App = () => {
                   onLoad={() => console.log('PDF iframe loaded')}
                   onError={() => console.log('PDF iframe error')}
                 />
+                <div className="pdf-fallback">
+                  <p>PDF not displaying properly? 
+                    <a 
+                      href={`${API}/files/serve/${encodeURIComponent(selectedFile.path)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="pdf-link"
+                    >
+                      Open PDF in new tab
+                    </a>
+                  </p>
+                </div>
               </div>
             </div>
           ) : (
