@@ -49,6 +49,73 @@ const App = () => {
     }
   }, []);
 
+  // Get file type for preview
+  const getFileType = (fileName) => {
+    const extension = fileName.toLowerCase().split('.').pop();
+    return extension;
+  };
+
+  // Render document preview based on file type
+  const renderDocumentPreview = (selectedFile) => {
+    const fileType = getFileType(selectedFile.name);
+    
+    if (fileType === 'pdf') {
+      return (
+        <div className="pdf-viewer">
+          <iframe
+            src={`${API}/files/serve/${encodeURIComponent(selectedFile.path)}#toolbar=1&navpanes=1&scrollbar=1`}
+            title={selectedFile.name}
+            width="100%"
+            height="100%"
+            frameBorder="0"
+            onLoad={() => console.log('PDF iframe loaded')}
+            onError={() => console.log('PDF iframe error')}
+          />
+          <div className="pdf-fallback">
+            <p>PDF not displaying properly? 
+              <a 
+                href={`${API}/files/serve/${encodeURIComponent(selectedFile.path)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pdf-link"
+              >
+                Open PDF in new tab
+              </a>
+            </p>
+          </div>
+        </div>
+      );
+    } else {
+      // For non-PDF files, show download/view options
+      return (
+        <div className="document-viewer">
+          <div className="document-info">
+            <h4>Document Preview</h4>
+            <p>File Type: {fileType.toUpperCase()}</p>
+            <p>This document type cannot be previewed inline.</p>
+          </div>
+          <div className="document-actions">
+            <a 
+              href={`${API}/files/serve/${encodeURIComponent(selectedFile.path)}`}
+              download={selectedFile.name}
+              className="download-button"
+            >
+              📥 Download File
+            </a>
+            <a 
+              href={`${API}/files/serve/${encodeURIComponent(selectedFile.path)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="view-button"
+            >
+              👁️ View in Browser
+            </a>
+          </div>
+        </div>
+      );
+    }
+  };
+
   // Debounced search
   useEffect(() => {
     const timer = setTimeout(() => {
