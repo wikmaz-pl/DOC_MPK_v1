@@ -90,14 +90,35 @@ const App = () => {
     }
   };
 
+  // Get file icon based on extension
+  const getFileIcon = (fileName) => {
+    const extension = fileName.toLowerCase().split('.').pop();
+    const iconMap = {
+      'pdf': '📄',
+      'xlsx': '📊',
+      'xls': '📊', 
+      'docx': '📝',
+      'doc': '📝',
+      'rtf': '📝',
+      'txt': '📃'
+    };
+    return iconMap[extension] || '📄';
+  };
+
+  // Check if file is supported
+  const isSupportedFile = (fileName) => {
+    const extension = fileName.toLowerCase().split('.').pop();
+    return ['pdf', 'xlsx', 'xls', 'docx', 'doc', 'rtf', 'txt'].includes(extension);
+  };
+
   // Handle file selection
   const handleFileSelect = (file) => {
     console.log('File selected:', file);
-    if (file.type === 'file' && file.name.toLowerCase().endsWith('.pdf')) {
+    if (file.type === 'file' && isSupportedFile(file.name)) {
       console.log('Setting selected file:', file);
       setSelectedFile(file);
     } else {
-      console.log('File is not a PDF or is not a file type');
+      console.log('File is not supported or is not a file type');
     }
   };
 
