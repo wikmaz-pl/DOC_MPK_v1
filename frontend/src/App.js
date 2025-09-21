@@ -301,37 +301,15 @@ const App = () => {
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Left Panel - PDF Preview */}
+        {/* Left Panel - Document Preview */}
         <div className="left-panel">
           {selectedFile ? (
             <div className="pdf-preview">
               <div className="preview-header">
-                <h3>📄 {selectedFile.name}</h3>
+                <h3>{getFileIcon(selectedFile.name)} {selectedFile.name}</h3>
                 <div className="preview-path">{selectedFile.path}</div>
               </div>
-              <div className="pdf-viewer">
-                <iframe
-                  src={`${API}/files/serve/${encodeURIComponent(selectedFile.path)}#toolbar=1&navpanes=1&scrollbar=1`}
-                  title={selectedFile.name}
-                  width="100%"
-                  height="100%"
-                  frameBorder="0"
-                  onLoad={() => console.log('PDF iframe loaded')}
-                  onError={() => console.log('PDF iframe error')}
-                />
-                <div className="pdf-fallback">
-                  <p>PDF not displaying properly? 
-                    <a 
-                      href={`${API}/files/serve/${encodeURIComponent(selectedFile.path)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="pdf-link"
-                    >
-                      Open PDF in new tab
-                    </a>
-                  </p>
-                </div>
-              </div>
+              {renderDocumentPreview(selectedFile)}
             </div>
           ) : (
             <div className="no-selection">
