@@ -314,16 +314,26 @@ const App = () => {
           ) : (
             <div className="no-selection">
               <div className="no-selection-content">
-                <h2>🔍 PDF Search System</h2>
-                <p>Select a PDF file from the right panel to preview it here</p>
+                <h2>🔍 Document Search System</h2>
+                <p>Select a document file from the right panel to preview it here</p>
                 <div className="instructions">
                   <h3>How to use:</h3>
                   <ul>
                     <li>🔍 Use the search bar to find files by name or content</li>
                     <li>📁 Click folders on the right to expand them</li>
-                    <li>📄 Click PDF files to preview them here</li>
-                    <li>🔄 Click "Index PDFs" to enable content search</li>
+                    <li>📄 Click document files to preview them here</li>
+                    <li>🔄 Click "Index Documents" to enable content search</li>
                   </ul>
+                  <div className="supported-formats">
+                    <h4>Supported formats:</h4>
+                    <div className="format-list">
+                      <span>📄 PDF</span>
+                      <span>📊 Excel (xlsx, xls)</span>
+                      <span>📝 Word (docx, doc)</span>
+                      <span>📝 RTF</span>
+                      <span>📃 Text files</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
