@@ -107,6 +107,10 @@ const App = () => {
               target="_blank"
               rel="noopener noreferrer"
               className="view-button"
+              onClick={(e) => {
+                e.preventDefault();
+                window.open(`${API}/files/serve/${encodeURIComponent(selectedFile.path)}`, '_blank', 'noopener,noreferrer');
+              }}
             >
               👁️ View in Browser
             </a>
