@@ -278,7 +278,7 @@ const App = () => {
       {/* Header with Search */}
       <header className="app-header">
         <div className="header-content">
-          <h1 className="app-title">📚 PDF Search System</h1>
+          <h1 className="app-title">📚 Document Search System</h1>
           <div className="search-container">
             <input
               type="text"
