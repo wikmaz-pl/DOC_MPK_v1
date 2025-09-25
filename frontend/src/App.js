@@ -316,8 +316,41 @@ const App = () => {
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Left Panel - Document Preview */}
+        {/* Left Panel - File Browser */}
         <div className="left-panel">
+          <div className="file-browser">
+            <div className="browser-header">
+              <h3>📁 File Browser</h3>
+              {currentPath && (
+                <div className="current-path">
+                  📍 {currentPath || 'Root'}
+                </div>
+              )}
+              {loading && <div className="loading-spinner">⏳</div>}
+            </div>
+            
+            {currentPath && (
+              <div className="navigation">
+                <button 
+                  className="nav-button"
+                  onClick={() => {
+                    const parentPath = currentPath.split('/').slice(0, -1).join('/');
+                    loadFileTree(parentPath);
+                  }}
+                >
+                  ⬆️ Back
+                </button>
+              </div>
+            )}
+
+            <div className="file-tree">
+              {renderFileTree(fileTree)}
+            </div>
+          </div>
+        </div>
+
+        {/* Middle Panel - Document Preview */}
+        <div className="middle-panel">
           {selectedFile ? (
             <div className="pdf-preview">
               <div className="preview-header">
@@ -330,12 +363,12 @@ const App = () => {
             <div className="no-selection">
               <div className="no-selection-content">
                 <h2>🔍 Document Search System</h2>
-                <p>Select a document file from the right panel to preview it here</p>
+                <p>Select a document file from the left panel or search results to preview it here</p>
                 <div className="instructions">
                   <h3>How to use:</h3>
                   <ul>
                     <li>🔍 Use the search bar to find files by name or content</li>
-                    <li>📁 Click folders on the right to expand them</li>
+                    <li>📁 Click folders on the left to expand them</li>
                     <li>📄 Click document files to preview them here</li>
                     <li>🔄 Click "Index Documents" to enable content search</li>
                   </ul>
@@ -355,36 +388,22 @@ const App = () => {
           )}
         </div>
 
-        {/* Right Panel - File Browser */}
+        {/* Right Panel - Search Results */}
         <div className="right-panel">
           {searchQuery ? renderSearchResults() : (
-            <div className="file-browser">
-              <div className="browser-header">
-                <h3>📁 File Browser</h3>
-                {currentPath && (
-                  <div className="current-path">
-                    📍 {currentPath || 'Root'}
-                  </div>
-                )}
-                {loading && <div className="loading-spinner">⏳</div>}
-              </div>
-              
-              {currentPath && (
-                <div className="navigation">
-                  <button 
-                    className="nav-button"
-                    onClick={() => {
-                      const parentPath = currentPath.split('/').slice(0, -1).join('/');
-                      loadFileTree(parentPath);
-                    }}
-                  >
-                    ⬆️ Back
-                  </button>
+            <div className="search-placeholder">
+              <div className="search-placeholder-content">
+                <h3>🔍 Search Results</h3>
+                <p>Start typing in the search bar to find documents</p>
+                <div className="search-tips">
+                  <h4>Search Tips:</h4>
+                  <ul>
+                    <li>Search by filename: "project", "financial"</li>
+                    <li>Search by content: "machine learning", "policy"</li>
+                    <li>Minimum 2 characters required</li>
+                    <li>Results show both filename and content matches</li>
+                  </ul>
                 </div>
-              )}
-
-              <div className="file-tree">
-                {renderFileTree(fileTree)}
               </div>
             </div>
           )}
