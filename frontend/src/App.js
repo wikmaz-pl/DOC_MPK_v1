@@ -280,14 +280,25 @@ const App = () => {
         <div className="header-content">
           <h1 className="app-title">📚 Document Search System</h1>
           <div className="search-container">
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Search files by name or content..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {isSearching && <div className="search-loading">🔍</div>}
+            <div className="search-input-wrapper">
+              <input
+                type="text"
+                className="search-input"
+                placeholder="Search files by name or content..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {searchQuery && (
+                <button 
+                  className="search-clear"
+                  onClick={() => setSearchQuery('')}
+                  title="Clear search"
+                >
+                  ✕
+                </button>
+              )}
+              {isSearching && <div className="search-loading">🔍</div>}
+            </div>
           </div>
           <button 
             className="index-button"
